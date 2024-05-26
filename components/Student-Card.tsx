@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import { Result } from '../types/student-type';
+import { formatDate } from '../utils/format-date';
 
 interface StudentCardProps {
   item: Result;
@@ -12,8 +13,8 @@ const StudentCard: React.FC<StudentCardProps> = ({ item } ) => (
     <View style={styles.studentInfo}>
       <Text style={styles.name}>{`${item.name.first} ${item.name.last}`}</Text>
       <View style={styles.details}>
-        <Text>{item.gender}</Text>
-        <Text>{item.dob.date}</Text>
+        <Text style={{ fontSize: 16}}>{item.gender}</Text>
+        <Text style={{ fontSize: 16}}>{formatDate(item?.dob?.date)}</Text>
       </View>
     </View>
   </View>
