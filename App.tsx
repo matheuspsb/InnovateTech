@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,11 +13,12 @@ import Colors from "./constants/Colors";
 import { Fill } from "./components/icons/Fill";
 import { Menu, Provider } from "react-native-paper";
 import StudentList from "./components/ui/StudentList";
+import useStudentData from "./hooks/useStudentData";
 
 export default function App() {
-  const [data, setData] = useState<Result[]>([]);
+  const { data, loading, setData, setLoading } = useStudentData();
+
   const [filteredData, setFilteredData] = useState<Result[]>([]);
-  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 
@@ -26,27 +26,6 @@ export default function App() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [genderFilter, setGenderFilter] = useState<string>("all");
-
-  async function loadStudentsData() {
-    try {
-      setLoading(true);
-      let cachedData = await AsyncStorage.getItem("studentsData");
-      if (cachedData) {
-        setData(JSON.parse(cachedData));
-        setFilteredData(JSON.parse(cachedData));
-        setLoading(false);
-      } else {
-        const response = await StudentService.getStudentsList();
-        setData(response);
-        setFilteredData(response);
-        await AsyncStorage.setItem("studentsData", JSON.stringify(response));
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setLoading(false);
-    }
-  }
 
   async function loadMoreStudents() {
     try {
@@ -72,10 +51,6 @@ export default function App() {
       setLoading(false);
     }
   }
-
-  useEffect(() => {
-    loadStudentsData();
-  }, []);
 
   const filterData = (data: Result[], text: string, gender: string) => {
     let filtered = data;
@@ -109,7 +84,7 @@ export default function App() {
   };
 
   const handleEndReached = () => {
-    if (!loading) {
+    if (!loading && search === "") {
       loadMoreStudents();
     }
   };
