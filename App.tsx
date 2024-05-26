@@ -11,6 +11,8 @@ import {
 import { StudentService } from "./services/student-service";
 import { Result } from "./types/student-type";
 import StudentCard from "./components/Student-Card";
+import AppBottomSheet from "./components/ui/AppBottomSheet";
+import Colors from "./constants/Colors";
 
 export default function App() {
   const [data, setData] = useState<Result[]>([]);
@@ -73,6 +75,7 @@ export default function App() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.container}>
         <Text style={styles.title}>InnovateTech</Text>
+        <AppBottomSheet.SearchInput value={''} onChangeText={() => {}} placeholder="Buscar o aluno..." />
         <FlatList
           data={data}
           keyExtractor={(item) => item.login.uuid}
@@ -97,5 +100,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     paddingVertical: 16,
+    color: Colors.light.primary,
   },
 });

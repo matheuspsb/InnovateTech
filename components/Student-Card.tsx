@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import { Result } from '../types/student-type';
 import { formatDate } from '../utils/format-date';
+import Colors from '../constants/Colors';
 
 interface StudentCardProps {
   item: Result;
@@ -13,8 +14,8 @@ const StudentCard: React.FC<StudentCardProps> = ({ item } ) => (
     <View style={styles.studentInfo}>
       <Text style={styles.name}>{`${item.name.first} ${item.name.last}`}</Text>
       <View style={styles.details}>
-        <Text style={{ fontSize: 16}}>{item.gender}</Text>
-        <Text style={{ fontSize: 16}}>{formatDate(item?.dob?.date)}</Text>
+        <Text style={styles.text}>{item.gender}</Text>
+        <Text style={styles.text}>{formatDate(item?.dob?.date)}</Text>
       </View>
     </View>
   </View>
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.light.white,
     borderRadius: 8,
     padding: 16,
     marginBottom: 20,
@@ -55,11 +56,16 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: Colors.dark.primaryLighter
   },
   details: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  }, 
+  },
+  text: {
+    fontSize: 16,
+    color: Colors.dark.gray500
+  } 
 });
 
 export default StudentCard;
