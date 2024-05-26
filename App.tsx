@@ -13,6 +13,7 @@ import { Result } from "./types/student-type";
 import StudentCard from "./components/ui/Student-Card";
 import AppBottomSheet from "./components/ui/AppBottomSheet";
 import Colors from "./constants/Colors";
+import { Fill } from "./components/icons/Fill";
 
 export default function App() {
   const [data, setData] = useState<Result[]>([]);
@@ -23,7 +24,6 @@ export default function App() {
 
   const [selectedStudent, setSelectedStudent] = useState<Result | null>(null);
   const [isModalVisible, setModalVisible] = useState(false);
-
 
   async function loadStudentsData() {
     try {
@@ -101,10 +101,27 @@ export default function App() {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.container}>
-        <Text style={styles.title}>InnovateTech</Text>
-        <AppBottomSheet.SearchInput value={search} onChangeText={handleSearch} placeholder="Buscar o aluno..." />
+        <View style={{ marginBottom: 25 }}>
+          <Text style={styles.title}>InnovateTech</Text>
+          <View style={styles.actionBar}>
+            <AppBottomSheet.SearchInput
+              value={search}
+              onChangeText={handleSearch}
+              placeholder="Buscar o aluno..."
+            />
+            <TouchableOpacity
+              style={{
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+              }}
+              onPress={() => {}}
+            >
+              <Fill />
+            </TouchableOpacity>
+          </View>
+        </View>
         <FlatList
           data={filteredData}
           keyExtractor={(item) => item.login.uuid}
@@ -126,7 +143,7 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({ 
+const styles = StyleSheet.create({
   container: {
     padding: 16,
   },
@@ -136,5 +153,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingVertical: 16,
     color: Colors.light.primary,
+  },
+  actionBar: {
+    width: "90%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });
