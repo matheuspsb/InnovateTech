@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { StyleSheet, View, ColorValue, Animated, Easing, Text } from 'react-native'
+import { StyleSheet, View, ColorValue, Animated, Easing } from 'react-native'
 
 interface Props {
   color: ColorValue

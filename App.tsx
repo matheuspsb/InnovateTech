@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  FlatList,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -10,12 +9,11 @@ import {
 } from "react-native";
 import { StudentService } from "./services/student-service";
 import { Result } from "./types/student-type";
-import StudentCard from "./components/ui/Student-Card";
 import AppBottomSheet from "./components/ui/AppBottomSheet";
 import Colors from "./constants/Colors";
 import { Fill } from "./components/icons/Fill";
 import { Menu, Provider } from "react-native-paper";
-import LoadingSpinner from "./components/icons/LoadingSpinner";
+import StudentList from "./components/ui/StudentList";
 
 export default function App() {
   const [data, setData] = useState<Result[]>([]);
@@ -119,12 +117,6 @@ export default function App() {
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-  const renderStudentCard = ({ item }: { item: Result }) => (
-    <TouchableOpacity onPress={() => handleCardPress(item)}>
-      <StudentCard item={item} />
-    </TouchableOpacity>
-  );
-
   return (
     <Provider>
       <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -165,24 +157,11 @@ export default function App() {
               </Menu>
             </View>
           </View>
-          <FlatList
+          <StudentList
             data={filteredData}
-            keyExtractor={(item) => item.login.uuid}
-            renderItem={renderStudentCard}
-            ListFooterComponent={
-              <View style={{ marginBottom: 150 }}>
-                {loading && (
-                  <View style={{ alignItems: "center", gap: 8 }}>
-                    <LoadingSpinner color={Colors.light.primary} />
-                    <Text style={{ color: Colors.light.primary }}>
-                      Carregando mais...
-                    </Text>
-                  </View>
-                )}
-              </View>
-            }
-            onEndReached={handleEndReached}
-            onEndReachedThreshold={0.01}
+            onPress={handleCardPress}
+            loading={loading}
+            handleEndReached={handleEndReached}
           />
         </View>
 
