@@ -16,17 +16,18 @@ import Colors from "./constants/Colors";
 
 export default function App() {
   const [data, setData] = useState<Result[]>([]);
+  const [filteredData, setFilteredData] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
 
   async function loadStudentsData() {
     try {
       setLoading(true);
       const response = await StudentService.getStudentsList();
       setData(response);
+      setFilteredData(response);
     } catch (error) {
-      setError("Failed to fetch students");
       console.error("Error:", error);
     } finally {
       setLoading(false);
@@ -38,7 +39,18 @@ export default function App() {
       setLoading(true);
       const nextPage = page + 1;
       const response = await StudentService.getStudentsList(nextPage);
-      setData([...data, ...response]);
+      const newData = [...data, ...response];
+      setData(newData);
+      if (search === "") {
+        setFilteredData(newData);
+      } else {
+        const filtered = newData.filter(
+          (item) =>
+            item.name.first.toLowerCase().includes(search.toLowerCase()) ||
+            item.name.last.toLowerCase().includes(search.toLowerCase())
+        );
+        setFilteredData(filtered);
+      }
       setPage(nextPage);
     } catch (error) {
       console.error("Error loading more students:", error);
@@ -51,18 +63,24 @@ export default function App() {
     loadStudentsData();
   }, []);
 
+  const handleSearch = (text: string) => {
+    setSearch(text);
+    if (text === "") {
+      setFilteredData(data);
+    } else {
+      const filtered = data.filter(
+        (item) =>
+          item.name.first.toLowerCase().includes(text.toLowerCase()) ||
+          item.name.last.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredData(filtered);
+    }
+  };
+
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>{error}</Text>
       </View>
     );
   }
@@ -75,13 +93,13 @@ export default function App() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.container}>
         <Text style={styles.title}>InnovateTech</Text>
-        <AppBottomSheet.SearchInput value={''} onChangeText={() => {}} placeholder="Buscar o aluno..." />
+        <AppBottomSheet.SearchInput value={search} onChangeText={handleSearch} placeholder="Buscar o aluno..." />
         <FlatList
-          data={data}
+          data={filteredData}
           keyExtractor={(item) => item.login.uuid}
           renderItem={renderStudentCard}
           ListFooterComponent={
-            <View style={{ alignItems: "center", marginVertical: 20 }}>
+            <View style={{ alignItems: "center", marginBottom: 120 }}>
               <Button title="Load More" onPress={loadMoreStudents} />
             </View>
           }
