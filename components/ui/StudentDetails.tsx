@@ -43,7 +43,7 @@ const StudentDetails: React.FC<StudentDetailsProps> = ({ student }) => {
           </View>
         </>
       ) : (
-        <Text>Não foi possível carregar os dados desse aluno...</Text>
+        <Text>Carregando...</Text>
       )}
     </View>
   );

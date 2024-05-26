@@ -49,7 +49,6 @@ export default function App() {
 
   async function loadMoreStudents() {
     try {
-      console.log("veio aqui")
       setLoading(true);
       const nextPage = page + 1;
       const response = await StudentService.getStudentsList(nextPage);
