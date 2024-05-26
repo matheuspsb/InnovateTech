@@ -31,7 +31,21 @@ Certifique-se de ter os seguintes softwares instalados em sua máquina:
 
 ## Passo a Passo para Execução do Projeto
 
-### 1. Instalar Dependências
+### 1. Clone o repositório
+
+Para clonar o repositório usando HTTPS, execute o seguinte comando no terminal:
+
+```bash
+git clone https://github.com/matheuspsb/InnovateTech.git
+```
+
+Se você preferir usar SSH, execute este comando:
+
+```bash
+git clone git@github.com:matheuspsb/InnovateTech.git
+```
+
+### 2. Instalar Dependências
 
 Primeiro, clone o repositório do projeto em sua máquina local. No terminal, navegue até o diretório do projeto e execute o comando abaixo para instalar todas as dependências necessárias:
 
@@ -39,7 +53,7 @@ Primeiro, clone o repositório do projeto em sua máquina local. No terminal, na
 yarn install
 ```
 
-### 2. Configurar a API
+### 3. Configurar a API
 
 Em seguida, você precisa configurar a URL da API. Crie um arquivo .env na raiz do projeto e adicione a URL da API conforme mostrado no arquivo env.example.
 
@@ -50,7 +64,7 @@ EXPO_PUBLIC_API_URL='https://your-public-url/api/'
 ```
 - Crie um novo arquivo .env na raiz do projeto e adicione a linha com a URL da API
 
-### 2. Iniciar o Projeto
+### 4. Iniciar o Projeto
 
 Com todas as dependências instaladas e a configuração da API feita, agora você pode iniciar o projeto com o Expo. Execute o comando abaixo no terminal:
 
