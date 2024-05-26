@@ -118,7 +118,7 @@ export default function App() {
   return (
     <Provider>
       <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-        <View style={styles.container}>
+        <View>
           <View style={{ marginBottom: 25 }}>
             <Text style={styles.title}>InnovateTech</Text>
             <View style={styles.actionBar}>
@@ -149,9 +149,6 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
   title: {
     fontSize: 28,
     fontWeight: "600",
@@ -164,5 +161,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: 16,
   },
 });
