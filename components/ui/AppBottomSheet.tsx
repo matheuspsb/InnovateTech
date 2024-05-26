@@ -22,7 +22,7 @@ function StudentDetailModal({ isVisible, onClose, student } : StudentDetailModal
       swipeDirection="down"
       style={modalStyle.modal}
     >
-      {student && <StudentDetails student={student} />}
+      <StudentDetails student={student} />
     </Modal>
   );
 };
