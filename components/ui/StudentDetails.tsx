@@ -38,7 +38,7 @@ const StudentDetails: React.FC<StudentDetailsProps> = ({ student }) => {
             />
             <StudentInfoItem
               title="Identificação"
-              value={`${student.id.name} ${student.id.value}`}
+              value={student.id.value}
             />
           </View>
         </>

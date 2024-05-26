@@ -1,24 +1,22 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { StudentService } from "./services/student-service";
 import { Result } from "./types/student-type";
 import AppBottomSheet from "./components/ui/AppBottomSheet";
 import Colors from "./constants/Colors";
-import { Fill } from "./components/icons/Fill";
-import { Menu, Provider } from "react-native-paper";
+import { Button, Provider } from "react-native-paper";
 import StudentList from "./components/ui/StudentList";
-import useStudentData from "./hooks/useStudentData";
 import FilterMenu from "./components/ui/FilterMenu";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
-  const { data, loading, setData, setLoading } = useStudentData();
-
+  const [data, setData] = useState<Result[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [filteredData, setFilteredData] = useState<Result[]>([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -28,8 +26,30 @@ export default function App() {
   const [visible, setVisible] = useState(false);
   const [genderFilter, setGenderFilter] = useState<string>("all");
 
+  async function loadStudentsData() {
+    try {
+      setLoading(true);
+      let cachedData = await AsyncStorage.getItem("studentsData");
+      if (cachedData) {
+        setData(JSON.parse(cachedData));
+        setFilteredData(JSON.parse(cachedData));
+        setLoading(false);
+      } else {
+        const response = await StudentService.getStudentsList();
+        setData(response);
+        setFilteredData(response);
+        await AsyncStorage.setItem("studentsData", JSON.stringify(response));
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setLoading(false);
+    }
+  }
+
   async function loadMoreStudents() {
     try {
+      console.log("veio aqui")
       setLoading(true);
       const nextPage = page + 1;
       const response = await StudentService.getStudentsList(nextPage);
@@ -53,6 +73,10 @@ export default function App() {
     }
   }
 
+  useEffect(() => {
+    loadStudentsData();
+  }, []);
+
   const filterData = (data: Result[], text: string, gender: string) => {
     let filtered = data;
     if (text !== "") {
@@ -68,10 +92,10 @@ export default function App() {
     setFilteredData(filtered);
   };
 
-  const handleSearch = (text: string) => {
+  const handleSearch = useCallback((text: string) => {
     setSearch(text);
     filterData(data, text, genderFilter);
-  };
+  }, [data, genderFilter]);
 
   const handleCardPress = (student: Result) => {
     setSelectedStudent(student);
@@ -90,7 +114,6 @@ export default function App() {
     }
   };
 
-  const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
   return (
