@@ -14,6 +14,7 @@ import { Fill } from "./components/icons/Fill";
 import { Menu, Provider } from "react-native-paper";
 import StudentList from "./components/ui/StudentList";
 import useStudentData from "./hooks/useStudentData";
+import FilterMenu from "./components/ui/FilterMenu";
 
 export default function App() {
   const { data, loading, setData, setLoading } = useStudentData();
@@ -104,32 +105,7 @@ export default function App() {
                 onChangeText={handleSearch}
                 placeholder="Buscar o aluno..."
               />
-              <Menu
-                visible={visible}
-                onDismiss={closeMenu}
-                anchor={
-                  <TouchableOpacity
-                    style={styles.filterButton}
-                    onPress={openMenu}
-                  >
-                    <Fill />
-                  </TouchableOpacity>
-                }
-                contentStyle={{ backgroundColor: Colors.light.white }}
-              >
-                <Menu.Item
-                  onPress={() => handleFilterChange("all")}
-                  title="Todos"
-                />
-                <Menu.Item
-                  onPress={() => handleFilterChange("male")}
-                  title="Masculino"
-                />
-                <Menu.Item
-                  onPress={() => handleFilterChange("female")}
-                  title="Feminino"
-                />
-              </Menu>
+              <FilterMenu onChange={handleFilterChange} />
             </View>
           </View>
           <StudentList
@@ -166,9 +142,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  },
-  filterButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
   },
 });
