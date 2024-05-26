@@ -14,6 +14,8 @@ import StudentCard from "./components/ui/Student-Card";
 import AppBottomSheet from "./components/ui/AppBottomSheet";
 import Colors from "./constants/Colors";
 import { Fill } from "./components/icons/Fill";
+import { Menu, Provider } from "react-native-paper";
+import LoadingSpinner from "./components/icons/LoadingSpinner";
 
 export default function App() {
   const [data, setData] = useState<Result[]>([]);
@@ -24,6 +26,8 @@ export default function App() {
 
   const [selectedStudent, setSelectedStudent] = useState<Result | null>(null);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [genderFilter, setGenderFilter] = useState<string>("all");
 
   async function loadStudentsData() {
     try {
@@ -67,24 +71,45 @@ export default function App() {
     loadStudentsData();
   }, []);
 
-  const handleSearch = (text: string) => {
-    setSearch(text);
-    if (text === "") {
-      setFilteredData(data);
-    } else {
-      const filtered = data.filter(
+  const filterData = (data: Result[], text: string, gender: string) => {
+    let filtered = data;
+    if (text !== "") {
+      filtered = filtered.filter(
         (item) =>
           item.name.first.toLowerCase().includes(text.toLowerCase()) ||
           item.name.last.toLowerCase().includes(text.toLowerCase())
       );
-      setFilteredData(filtered);
     }
+    if (gender !== "all") {
+      filtered = filtered.filter((item) => item.gender === gender);
+    }
+    setFilteredData(filtered);
+  };
+
+  const handleSearch = (text: string) => {
+    setSearch(text);
+    filterData(data, text, genderFilter);
   };
 
   const handleCardPress = (student: Result) => {
     setSelectedStudent(student);
     setModalVisible(true);
   };
+
+  const handleFilterChange = (value: string) => {
+    setGenderFilter(value);
+    filterData(data, search, value);
+    closeMenu();
+  };
+
+  const handleEndReached = () => {
+    if (!loading) {
+      loadMoreStudents();
+    }
+  };
+
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
 
   // if (loading) {
   //   return (
@@ -101,45 +126,73 @@ export default function App() {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <View style={styles.container}>
-        <View style={{ marginBottom: 25 }}>
-          <Text style={styles.title}>InnovateTech</Text>
-          <View style={styles.actionBar}>
-            <AppBottomSheet.SearchInput
-              value={search}
-              onChangeText={handleSearch}
-              placeholder="Buscar o aluno..."
-            />
-            <TouchableOpacity
-              style={{
-                paddingHorizontal: 16,
-                paddingVertical: 12,
-              }}
-              onPress={() => {}}
-            >
-              <Fill />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <FlatList
-          data={filteredData}
-          keyExtractor={(item) => item.login.uuid}
-          renderItem={renderStudentCard}
-          ListFooterComponent={
-            <View style={{ alignItems: "center", marginBottom: 120 }}>
-              <Button title="Load More" onPress={loadMoreStudents} />
+    <Provider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+        <View style={styles.container}>
+          <View style={{ marginBottom: 25 }}>
+            <Text style={styles.title}>InnovateTech</Text>
+            <View style={styles.actionBar}>
+              <AppBottomSheet.SearchInput
+                value={search}
+                onChangeText={handleSearch}
+                placeholder="Buscar o aluno..."
+              />
+              <Menu
+                visible={visible}
+                onDismiss={closeMenu}
+                anchor={
+                  <TouchableOpacity
+                    style={styles.filterButton}
+                    onPress={openMenu}
+                  >
+                    <Fill />
+                  </TouchableOpacity>
+                }
+                contentStyle={{ backgroundColor: Colors.light.white }}
+              >
+                <Menu.Item
+                  onPress={() => handleFilterChange("all")}
+                  title="Todos"
+                />
+                <Menu.Item
+                  onPress={() => handleFilterChange("male")}
+                  title="Masculino"
+                />
+                <Menu.Item
+                  onPress={() => handleFilterChange("female")}
+                  title="Feminino"
+                />
+              </Menu>
             </View>
-          }
-        />
-      </View>
+          </View>
+          <FlatList
+            data={filteredData}
+            keyExtractor={(item) => item.login.uuid}
+            renderItem={renderStudentCard}
+            ListFooterComponent={
+              <View style={{ marginBottom: 150 }}>
+                {loading && (
+                  <View style={{ alignItems: "center", gap: 8 }}>
+                    <LoadingSpinner color={Colors.light.primary} />
+                    <Text style={{ color: Colors.light.primary }}>
+                      Carregando mais...
+                    </Text>
+                  </View>
+                )}
+              </View>
+            }
+            onEndReached={handleEndReached}
+            onEndReachedThreshold={0.01}
+          />
+        </View>
 
-      <AppBottomSheet.Modal
-        isVisible={isModalVisible}
-        onClose={() => setModalVisible(false)}
-        student={selectedStudent}
-      />
-    </SafeAreaView>
+        <AppBottomSheet.Modal
+          isVisible={isModalVisible}
+          onClose={() => setModalVisible(false)}
+          student={selectedStudent}
+        />
+      </SafeAreaView>
+    </Provider>
   );
 }
 
@@ -159,5 +212,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  filterButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
 });
