@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  Button,
   FlatList,
   SafeAreaView,
   StyleSheet,
@@ -32,12 +32,20 @@ export default function App() {
   async function loadStudentsData() {
     try {
       setLoading(true);
-      const response = await StudentService.getStudentsList();
-      setData(response);
-      setFilteredData(response);
+      let cachedData = await AsyncStorage.getItem("studentsData");
+      if (cachedData) {
+        setData(JSON.parse(cachedData));
+        setFilteredData(JSON.parse(cachedData));
+        setLoading(false);
+      } else {
+        const response = await StudentService.getStudentsList();
+        setData(response);
+        setFilteredData(response);
+        await AsyncStorage.setItem("studentsData", JSON.stringify(response));
+        setLoading(false);
+      }
     } catch (error) {
       console.error("Error:", error);
-    } finally {
       setLoading(false);
     }
   }
