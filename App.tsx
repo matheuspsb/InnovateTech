@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   Button,
   FlatList,
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { StudentService } from "./services/student-service";
 import { Result } from "./types/student-type";
-import StudentCard from "./components/Student-Card";
+import StudentCard from "./components/ui/Student-Card";
 import AppBottomSheet from "./components/ui/AppBottomSheet";
 import Colors from "./constants/Colors";
 
@@ -20,6 +20,10 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+
+  const [selectedStudent, setSelectedStudent] = useState<Result | null>(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+
 
   async function loadStudentsData() {
     try {
@@ -77,16 +81,23 @@ export default function App() {
     }
   };
 
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+  const handleCardPress = (student: Result) => {
+    setSelectedStudent(student);
+    setModalVisible(true);
+  };
+
+  // if (loading) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+  //       <ActivityIndicator size="large" color="#0000ff" />
+  //     </View>
+  //   );
+  // }
 
   const renderStudentCard = ({ item }: { item: Result }) => (
-    <StudentCard item={item} />
+    <TouchableOpacity onPress={() => handleCardPress(item)}>
+      <StudentCard item={item} />
+    </TouchableOpacity>
   );
 
   return (
@@ -105,6 +116,12 @@ export default function App() {
           }
         />
       </View>
+
+      <AppBottomSheet.Modal
+        isVisible={isModalVisible}
+        onClose={() => setModalVisible(false)}
+        student={selectedStudent}
+      />
     </SafeAreaView>
   );
 }

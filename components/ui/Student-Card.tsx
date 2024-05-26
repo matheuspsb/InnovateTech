@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
-import { Result } from '../types/student-type';
-import { formatDate } from '../utils/format-date';
-import Colors from '../constants/Colors';
+import { Result } from '../../types/student-type';
+import { formatDate } from '../../utils/format-date';
+import Colors from '../../constants/Colors';
 
 interface StudentCardProps {
   item: Result;
