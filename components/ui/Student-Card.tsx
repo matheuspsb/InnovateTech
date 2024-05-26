@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import { Result } from '../../types/student-type';
 import { formatDate } from '../../utils/format-date';
@@ -8,18 +8,23 @@ interface StudentCardProps {
   item: Result;
 }
 
-const StudentCard: React.FC<StudentCardProps> = ({ item } ) => (
-  <View style={styles.card}>
-    <Image source={{ uri: item.picture.large }} style={styles.studentImage} />
-    <View style={styles.studentInfo}>
-      <Text style={styles.name}>{`${item.name.first} ${item.name.last}`}</Text>
-      <View style={styles.details}>
-        <Text style={styles.text}>{item.gender}</Text>
-        <Text style={styles.text}>{formatDate(item?.dob?.date)}</Text>
+class StudentCard extends PureComponent<StudentCardProps> {
+  render() {
+    const { item } = this.props;
+    return (
+      <View style={styles.card}>
+        <Image source={{ uri: item.picture.large }} style={styles.studentImage} />
+        <View style={styles.studentInfo}>
+          <Text style={styles.name}>{`${item.name.first} ${item.name.last}`}</Text>
+          <View style={styles.details}>
+            <Text style={styles.text}>{item.gender}</Text>
+            <Text style={styles.text}>{formatDate(item?.dob?.date)}</Text>
+          </View>
+        </View>
       </View>
-    </View>
-  </View>
-);
+    );
+  }
+}
 
 const windowWidth = Dimensions.get('window').width;
 
