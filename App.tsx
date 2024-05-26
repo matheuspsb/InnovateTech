@@ -111,14 +111,6 @@ export default function App() {
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-  // if (loading) {
-  //   return (
-  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-  //       <ActivityIndicator size="large" color="#0000ff" />
-  //     </View>
-  //   );
-  // }
-
   const renderStudentCard = ({ item }: { item: Result }) => (
     <TouchableOpacity onPress={() => handleCardPress(item)}>
       <StudentCard item={item} />
